@@ -1,10 +1,15 @@
 .PHONY: clean build run stop inspect
 
-IMAGE_NAME = nikos/python-flask-app
-CONTAINER_NAME = python-flask-app
+IMAGE_NAME = nikos/alpine-python3-flask
+CONTAINER_NAME = flask-demoapp
 
 build:
 	docker build -t $(IMAGE_NAME) .
+
+release:
+	docker build \
+		--build-arg VCS_REF=`git rev-parse --short HEAD` \
+		--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` -t $(IMAGE_NAME) .
 
 run:
 	docker run --rm -p 5000:5000 --name $(CONTAINER_NAME) $(IMAGE_NAME)
